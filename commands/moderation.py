@@ -1,23 +1,26 @@
+from pyexpat.errors import messages
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
+@app_commands.guild_only()  # Uniquement sur le serveur
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @app_commands.command(name="clear", description="Supprime un certain nombre de messages dans le salon actuel.")
-    async def clear(self, interaction: discord.Interaction, amount: int):
-        if not interaction.user.guild_permissions.manage_messages:
-            await interaction.response.send_message("Vous n'avez pas la permission de gérer les messages.", ephemeral=True)
-            return
+    @app_commands.checks.has_permissions(manage_messages=True) # Vérifie si l'utilisateur a la permission de gérer les messages
+    async def clear(self, interaction: discord.Interaction, amount: app_commands.Range[int, 1, 100]):
+        await interaction.response.defer(ephemeral=True)
 
         if amount < 1:
             await interaction.response.send_message("Le nombre de messages à supprimer doit être supérieur à 0.", ephemeral=True)
             return
 
-        deleted = await interaction.channel.purge(limit=amount)
-        await interaction.response.send_message(f"{len(deleted)} messages ont été supprimés.", ephemeral=True)
+        messages = await interaction.channel.history(limit=amount).flatten()
+        await interaction.channel.delete_messages(messages)
+        await interaction.followup.send(f"{len(messages)} messages supprimés.", ephemeral=True)
 
     @app_commands.command(name="kick", description="Expulse un membre du serveur.")
     async def kick(self, interaction: discord.Interaction, member: discord.Member, reason: str = None):
