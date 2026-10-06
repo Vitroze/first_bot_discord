@@ -25,6 +25,14 @@ class Moderation(commands.Cog):
             await interaction.response.send_message("Vous n'avez pas la permission d'expulser des membres.", ephemeral=True)
             return
 
+        if member == interaction.user:
+            await interaction.response.send_message("Vous ne pouvez pas vous expulser vous-même.", ephemeral=True)
+            return
+
+        if member == self.bot.user:
+            await interaction.response.send_message("Je ne peux pas m'expulser moi-même.", ephemeral=True)
+            return
+
         await member.kick(reason=reason)
         await interaction.response.send_message(f"{member.mention} a été expulsé du serveur.")
 
