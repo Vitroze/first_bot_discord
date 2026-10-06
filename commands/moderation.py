@@ -3,6 +3,9 @@ from pyexpat.errors import messages
 import discord
 from discord import app_commands
 from discord.ext import commands
+from main import printMessage
+
+printMessage("Moderation", "Chargement de l'extension : moderation")
 
 @app_commands.guild_only()  # Uniquement sur le serveur
 class Moderation(commands.Cog):

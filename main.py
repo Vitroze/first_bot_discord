@@ -24,6 +24,9 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 #     except Exception as e:
 #         print(e)
 
+def printMessage(MODULE, message):
+    print(f"[VitrozeBot - {MODULE}] {message}")
+
 class RegisterCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -36,10 +39,10 @@ class RegisterCommands(commands.Cog):
 
         try:
             guild = discord.Object(id=858647206394200064)
-            print(f"Connecté en tant que {self.bot.user}")
+            printMessage("Main", f"Connecté en tant que {self.bot.user}")
             self.bot.tree.copy_global_to(guild=guild)
             synced = await self.bot.tree.sync(guild=guild)
-            print(f"Commandes slash synchronisées : {len(synced)}")
+            printMessage("RegisterCommands", f"Commandes slash synchronisées : {len(synced)}")
             self.synced = True
         except Exception as e:
             print(e)
@@ -48,14 +51,15 @@ async def main():
     async with bot:
         for filename in os.listdir("./commands"):
             if filename.endswith(".py"):
-                print(f"Chargement de l'extension : {filename[:-3]}")
+                printMessage("RegisterCommands", f"Chargement de l'extension : {filename[:-3]}")
                 await bot.load_extension(f"commands.{filename[:-3]}")
 
 
         await bot.add_cog(RegisterCommands(bot))
         await bot.start(os.getenv("DISCORD_TOKEN"))
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
 
 # @bot.event
 # async def on_member_join(member):
