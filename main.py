@@ -4,7 +4,6 @@ os.system("cls" if os.name == "nt" else "clear")  # Clear the console for better
 
 import asyncio
 import discord
-from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -27,6 +26,9 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 def printMessage(MODULE, message):
     print(f"[VitrozeBot - {MODULE}] {message}")
 
+def printError(MODULE, message):
+    print(f"[VitrozeBot - {MODULE}] ERREUR : {message}")
+
 class RegisterCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -45,7 +47,7 @@ class RegisterCommands(commands.Cog):
             printMessage("RegisterCommands", f"Commandes slash synchronisées : {len(synced)}")
             self.synced = True
         except Exception as e:
-            print(e)
+            printError("RegisterCommands", f"Erreur ({type(e).__name__}) lors de la synchronisation des commandes : {e}")
 
 async def main():
     async with bot:
