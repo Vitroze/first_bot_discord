@@ -28,7 +28,7 @@ class Fun(commands.Cog):
     async def random_meme(self, interaction: discord.Interaction):
         await interaction.response.send_message(random.choice(self.listMeme))
 
-    @app_commands.command(name="test_choose", description="Choisis une option")
+    @app_commands.command(name="pierre_feuille_ciseaux", description="Choisis une option")
     @app_commands.describe(choices="Pierre, feuille ou ciseaux")
     @app_commands.choices(choices=[
         app_commands.Choice(name="Rock", value="rock"),
