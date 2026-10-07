@@ -63,10 +63,10 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 
-# @bot.event
-# async def on_member_join(member):
-#     print(f"Test {member}")
-#     await member.send("Bienvenue à toi sur le serveur")
+@bot.event
+async def on_member_join(member):
+    print(f"Test {member}")
+    await member.send("Bienvenue à toi sur le serveur")
 
 # @bot.tree.command(name="ping", description="Réponse ?")
 # async def ping(interaction: discord.Interaction, text: str, number:int, boolean: bool = False) -> None:
