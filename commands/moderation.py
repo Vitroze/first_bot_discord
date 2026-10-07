@@ -21,7 +21,7 @@ class Moderation(commands.Cog):
             await interaction.response.send_message("Le nombre de messages à supprimer doit être supérieur à 0.", ephemeral=True)
             return
 
-        messages = await interaction.channel.history(limit=amount).flatten()
+        messages = [message async for message in interaction.channel.history(limit=amount)]
         await interaction.channel.delete_messages(messages)
         await interaction.followup.send(f"{len(messages)} messages supprimés.", ephemeral=True)
 
