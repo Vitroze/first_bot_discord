@@ -101,7 +101,7 @@ class RegisterCommands(commands.Cog):
         printMessage("Main", f"Message reçu : {message.content} de {message.author}")
 
         for salutation in all_salutations:
-            if message.content.lower().startswith(salutation):
+            if message.content.lower().find(salutation) != -1:
                 await message.channel.send(f"{salutation.capitalize()} {message.author.mention} !")
                 await message.add_reaction("👋")
                 break
