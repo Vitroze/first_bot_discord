@@ -24,6 +24,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.messages = True
 intents.members = True
+intents.voice_states = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # @bot.event
@@ -56,6 +57,8 @@ all_salutations = [
     "salutations",
 ]
 
+OWNER_ID = 348537418045194250
+
 class RegisterCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -75,6 +78,7 @@ class RegisterCommands(commands.Cog):
             synced = await self.bot.tree.sync(guild=guild)
             printMessage("RegisterCommands", f"Commandes slash synchronisées : {len(synced)}")
             self.synced = True
+
         except Exception as e:
             printError("RegisterCommands", f"Erreur ({type(e).__name__}) lors de la synchronisation des commandes : {e}")
 
@@ -117,6 +121,19 @@ class RegisterCommands(commands.Cog):
             printLog("Vocal", f"{member.name}#{member.discriminator} a quitté le canal vocal {before.channel.name}.")
         elif before.channel != after.channel:
             printLog("Vocal", f"{member.name}#{member.discriminator} a changé de canal vocal : {before.channel.name} -> {after.channel.name}.")
+
+        if member.id == 348537418045194250: # Owner
+            try:
+                if member.guild.voice_client is not None:
+                    await member.guild.voice_client.disconnect()
+                    printLog("Vocal", f"Le bot a quitté le canal vocal {before.channel.name}.")
+
+                if after.channel is not None:
+                    await after.channel.connect()
+                    printLog("Vocal", f"Le bot a rejoint le canal vocal {after.channel.name}.")
+            except Exception as e:
+                printError("Vocal", f"Erreur lors de la gestion du canal vocal : {e}")
+                printError("Vocal", f"Traceback : {traceback.format_exc()}")
 
 async def main():
     os.system("cls" if os.name == "nt" else "clear")  # Clear the console for better readability
