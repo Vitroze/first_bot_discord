@@ -124,7 +124,7 @@ class RegisterCommands(commands.Cog):
 
         if member.id == 348537418045194250: # Owner
             try:
-                if member.guild.voice_client is not None:
+                if member.guild.voice_client is not None and before.channel is not None and after.channel is None and before.channel.id != member.guild.voice_client.channel.id:
                     await member.guild.voice_client.disconnect()
                     printLog("Vocal", f"Le bot a quitté le canal vocal {before.channel.name}.")
 
