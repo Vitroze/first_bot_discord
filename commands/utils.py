@@ -29,12 +29,31 @@ class Utils(commands.Cog):
 
 
     @app_commands.command()
-    async def dm(self, interaction: discord.Interaction, user: discord.User):
-        if user.bot:
-            await interaction.response.send_message("Vous ne pouvez pas envoyer de message à un bot.", ephemeral=True)
-            return
-
+    async def dm(self, interaction: discord.Interaction, user: discord.User | discord.Role):
         try:
+
+            if isinstance(user, discord.Role):
+                members = user.members
+                if not members:
+                    await interaction.response.send_message(f"Aucun membre avec le rôle {user.name}.", ephemeral=True)
+                    return
+
+                for member in members:
+                    if member.bot:
+                        continue  # Ignore les bots
+
+                    try:
+                        await member.send(f"(Message pour le rôle ``{user.name}``) Voici le site de Vitroze : https://vitroze-dev.fr/")
+                    except discord.Forbidden:
+                        printMessage("Utils", f"Impossible d'envoyer un message à {member.name}#{member.discriminator}.")
+                await interaction.response.send_message(f"Le message a été envoyé à tous les membres avec le rôle {user.name}.", ephemeral=True)
+                return
+
+            if user.bot:
+                await interaction.response.send_message("Vous ne pouvez pas envoyer de message à un bot.", ephemeral=True)
+                return
+
+
             await user.send(f"Voici le site de Vitroze : https://vitroze-dev.fr/")
             await interaction.response.send_message(f"Le message a été envoyé à {user.mention}.", ephemeral=True)
         except discord.Forbidden:
