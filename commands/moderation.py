@@ -26,6 +26,7 @@ class Moderation(commands.Cog):
         await interaction.followup.send(f"{len(messages)} messages supprimés.", ephemeral=True)
 
     @app_commands.command(name="kick", description="Expulse un membre du serveur.")
+    @app_commands.checks.has_permissions(kick_members=True)
     async def kick(self, interaction: discord.Interaction, member: discord.Member, reason: str = None):
         if not interaction.user.guild_permissions.kick_members:
             await interaction.response.send_message("Vous n'avez pas la permission d'expulser des membres.", ephemeral=True)
@@ -39,8 +40,9 @@ class Moderation(commands.Cog):
             await interaction.response.send_message("Je ne peux pas m'expulser moi-même.", ephemeral=True)
             return
 
+        await member.send(f"Vous avez été expulsé du serveur {interaction.guild.name} par {interaction.user.name}. Raison : {reason}")
         await member.kick(reason=reason)
-        await interaction.response.send_message(f"{member.mention} a été expulsé du serveur.")
+        await interaction.response.send_message(f"{member.mention} a été expulsé du serveur.\n> Raison : {reason}")
 
 async def setup(bot):
     await bot.add_cog(Moderation(bot))
