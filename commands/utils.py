@@ -27,5 +27,18 @@ class Utils(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
+
+    @app_commands.command()
+    async def dm(self, interaction: discord.Interaction, user: discord.User):
+        if user.bot:
+            await interaction.response.send_message("Vous ne pouvez pas envoyer de message à un bot.", ephemeral=True)
+            return
+
+        try:
+            await user.send(f"Voici le site de Vitroze : https://vitroze-dev.fr/")
+            await interaction.response.send_message(f"Le message a été envoyé à {user.mention}.", ephemeral=True)
+        except discord.Forbidden:
+            await interaction.response.send_message(f"Je ne peux pas envoyer de message à {user.mention}.", ephemeral=True)
+
 async def setup(bot):
     await bot.add_cog(Utils(bot))

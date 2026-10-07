@@ -38,5 +38,14 @@ class Fun(commands.Cog):
     async def test_choose(self, interaction: discord.Interaction, choices: app_commands.Choice[str]):
         await interaction.response.send_message(f"Ton option : {choices.name} - {choices.value}")
 
+    @app_commands.command(description="Choisi un nombre aléatoire")
+    async def roll(self, interaction: discord.Interaction, sides: int = 6):
+        if sides < 1:
+            await interaction.response.send_message(f"Le nombre doit être supérieur à 1. Votre nombre : {sides}")
+            return
+
+        result = random.randint(1, sides)
+        await interaction.response.send_message(f"Vous avez lancé un dé à {sides} faces et obtenu : {result}")
+
 async def setup(bot):
     await bot.add_cog(Fun(bot))
