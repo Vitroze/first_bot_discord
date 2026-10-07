@@ -39,7 +39,10 @@ def printMessage(MODULE, message):
     print(f"{bcolors.OKGREEN}[VitrozeBot - {MODULE}] {message}{bcolors.ENDC}")
 
 def printError(MODULE, message):
-    print(f"{bcolors.FAIL}[VitrozeBot - {MODULE}] ERREUR : {message}{bcolors.ENDC}")
+    print(f"{bcolors.FAIL}[VitrozeBot - {MODULE}] [ERREUR] : {message}{bcolors.ENDC}")
+
+def printLog(MODULE, message):
+    print(f"{bcolors.OKBLUE}[VitrozeBot - {MODULE}] [LOG] : {message}{bcolors.ENDC}")
 
 all_salutations = [
     "salut",
@@ -87,7 +90,7 @@ class RegisterCommands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        printMessage("Main", f"Nouvel utilisateur : {member.name}#{member.discriminator} ({member.id})")
+        printLog("Main", f"Nouvel utilisateur : {member.name}#{member.discriminator} ({member.id})")
         try:
             await member.send(f"Bienvenue à toi sur le serveur {member.guild.name} !")
         except discord.Forbidden:
@@ -98,13 +101,22 @@ class RegisterCommands(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        printMessage("Main", f"Message reçu : {message.content} de {message.author}")
+        printLog("Message", f"Message reçu : {message.content} de {message.author}")
 
         for salutation in all_salutations:
             if message.content.lower().find(salutation) != -1:
                 await message.channel.send(f"{salutation.capitalize()} {message.author.mention} !")
                 await message.add_reaction("👋")
                 break
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if before.channel is None and after.channel is not None:
+            printLog("Vocal", f"{member.name}#{member.discriminator} a rejoint le canal vocal {after.channel.name}.")
+        elif before.channel is not None and after.channel is None:
+            printLog("Vocal", f"{member.name}#{member.discriminator} a quitté le canal vocal {before.channel.name}.")
+        elif before.channel != after.channel:
+            printLog("Vocal", f"{member.name}#{member.discriminator} a changé de canal vocal : {before.channel.name} -> {after.channel.name}.")
 
 async def main():
     os.system("cls" if os.name == "nt" else "clear")  # Clear the console for better readability
