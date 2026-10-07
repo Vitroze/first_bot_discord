@@ -183,7 +183,7 @@ class Utils(commands.Cog):
 
         print("Roulette", f"Nouvelle partie de roulette russe entre {interaction.user.name}#{interaction.user.discriminator} et {member.name}#{member.discriminator}.")
 
-        await discord.utils.sleep_until(discord.utils.utcnow() + timedelta(seconds=3))  # Wait for 300 seconds (5 minutes)
+        await discord.utils.sleep_until(discord.utils.utcnow() + timedelta(seconds=300))  # Wait for 300 seconds (5 minutes)
         self.all_parts = [game for game in self.all_parts if game[2] != view]  # Remove the game from the list
         view.stop()  # Stop the view to disable the button
 
